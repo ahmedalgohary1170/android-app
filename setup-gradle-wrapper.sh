@@ -1,13 +1,21 @@
 #!/bin/bash
 
-# This script downloads and sets up the Gradle wrapper
+# This script sets up the Gradle wrapper properly
 
-# Gradle version to use
-GRADLE_VERSION=7.5
+# Install Gradle locally if not installed
+if ! command -v gradle &> /dev/null
+then
+    echo "Gradle is not installed. Installing Gradle..."
+    mkdir -p /tmp/gradle-install
+    cd /tmp/gradle-install
+    wget https://services.gradle.org/distributions/gradle-7.5-bin.zip
+    unzip -q gradle-7.5-bin.zip
+    export PATH=$PATH:/tmp/gradle-install/gradle-7.5/bin
+    cd -
+fi
 
-# Download gradle-wrapper.jar
-mkdir -p gradle/wrapper
-curl -L -o gradle/wrapper/gradle-wrapper.jar "https://github.com/gradle/gradle/raw/v${GRADLE_VERSION}/gradle/wrapper/gradle-wrapper.jar"
+# Generate Gradle wrapper files properly
+gradle wrapper --gradle-version 7.5 --distribution-type bin
 
 # Make sure gradlew is executable
 chmod +x gradlew

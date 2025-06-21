@@ -22,19 +22,20 @@ jobs:
         distribution: 'temurin'
         cache: 'gradle'
         
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3.5.0
-      with:
-        gradle-version: 7.5
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
         
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+    - name: Install Gradle
+      run: |
+        wget https://services.gradle.org/distributions/gradle-7.5-bin.zip
+        unzip -q gradle-7.5-bin.zip
+        export PATH=$PATH:$PWD/gradle-7.5/bin
+        echo "export PATH=$PATH:$PWD/gradle-7.5/bin" >> $GITHUB_ENV
       
-    - name: Validate Gradle wrapper
-      uses: gradle/wrapper-validation-action@v1
-      
-    - name: Build with Gradle
-      run: ./gradlew assembleRelease --no-daemon
+    - name: Build with Gradle directly
+      run: |
+        cd app
+        gradle assembleRelease
       
     - name: Upload APK
       uses: actions/upload-artifact@v4

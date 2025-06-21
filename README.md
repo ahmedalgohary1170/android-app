@@ -12,33 +12,46 @@
 
 ## متطلبات النظام
 
-- Android Studio (أحدث إصدار)
-- SDK الأندرويد مع API 30 على الأقل
-- JDK 11 أو أحدث
+- Android 11 (API 30) أو أحدث للجهاز المستهدف
+- للتطوير:
+  - Android Studio أو Gradle 7.5+
+  - SDK الأندرويد مع API 34
+  - JDK 11
 
-## كيفية البناء
+## محتويات المشروع
 
-يمكنك بناء التطبيق بإحدى الطرق التالية:
+- `/app` - يحتوي على كود التطبيق الرئيسي
+- `/gradle` - ملفات Gradle
+- `/.github/workflows` - ملفات GitHub Actions للبناء التلقائي
 
-### باستخدام Android Studio
-1. قم بفتح المشروع في Android Studio
-2. انتظر حتى يتم تجهيز المشروع وتحميل كل الاعتماديات
-3. اختر `Build > Build Bundle(s) / APK(s) > Build APK(s)`
-
-### باستخدام سطر الأوامر
-```bash
-# للإصدار التجريبي
-./gradlew assembleDebug
-
-# للإصدار النهائي
-./gradlew assembleRelease
-```
+## كيفية النشر
 
 ### باستخدام GitHub Actions
-1. ادفع التغييرات إلى فرع رئيسي (main/master) في مستودع GitHub
-2. سيقوم GitHub Actions تلقائيًا ببناء التطبيق
+1. انسخ هذا المستودع إلى حساب GitHub الخاص بك
+2. GitHub Actions سيقوم تلقائيًا ببناء التطبيق عند كل دفع للتغييرات
 3. ستجد ملف APK في قسم "Artifacts" من تشغيل سير العمل
 
-## ملاحظات
-- يتطلب هذا التطبيق Android 11 (API 30) أو أحدث للعمل بشكل صحيح بسبب استخدام صلاحية MANAGE_EXTERNAL_STORAGE
+### بناء المشروع محليًا
+
+إذا كنت ترغب في بناء المشروع محليًا، قم بتنفيذ الأوامر التالية:
+
+```bash
+# تثبيت Gradle إذا لم يكن مثبتًا
+wget https://services.gradle.org/distributions/gradle-7.5-bin.zip
+unzip gradle-7.5-bin.zip
+export PATH=$PATH:$PWD/gradle-7.5/bin
+
+# بناء التطبيق
+cd app
+gradle assembleRelease
+```
+
+سيتم إنشاء ملف APK في المسار:
+`app/build/outputs/apk/release/app-release.apk`
+
+## ملاحظات أمنية
+
+- يتطلب هذا التطبيق صلاحية MANAGE_EXTERNAL_STORAGE التي تعطي وصولًا كاملاً للتخزين الخارجي
+- الاستخدام غير المسؤول قد يؤدي إلى فقدان البيانات
 - يجب على المستخدم منح الإذن يدويًا عن طريق الانتقال إلى إعدادات النظام
+- التطبيق مصمم لتنظيف التخزين الخارجي بالكامل، استخدمه بحذر
