@@ -24,16 +24,30 @@ jobs:
         
     - name: Install Gradle and build APK
       run: |
+        # Set JAVA_HOME explicitly
+        export JAVA_HOME=$JAVA_HOME_17_X64
+        echo "Using Java home: $JAVA_HOME"
+        java -version
+        
+        # Download and setup Gradle
         wget https://services.gradle.org/distributions/gradle-7.5-bin.zip
         unzip -q gradle-7.5-bin.zip
         export PATH=$PATH:$PWD/gradle-7.5/bin
         
-        # Accept Android SDK licenses
+        # Create gradle.properties if it doesn't exist
+        mkdir -p ~/.gradle
+        echo "org.gradle.java.home=$JAVA_HOME" >> ~/.gradle/gradle.properties
+        echo "android.useAndroidX=true" >> ~/.gradle/gradle.properties
+        echo "android.enableJetifier=true" >> ~/.gradle/gradle.properties
+        echo "android.suppressUnsupportedCompileSdk=34" >> ~/.gradle/gradle.properties
+        
+        # Accept Android SDK licenses quietly with sdkmanager environment variable
+        export SKIP_JDK_VERSION_CHECK=1
         yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
         
         # Build the APK
         cd app
-        gradle assembleRelease
+        gradle assembleRelease --info
       
     - name: Upload APK
       uses: actions/upload-artifact@v4
